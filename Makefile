@@ -15,5 +15,11 @@ migratedown:
 
 sqlc:
 	sqlc generate
+
+run:
+	go run main.go
+
+build :
+	go build -o .
 	
-.PHONY: createdb dropdb psql migrateup migratedown sqlc
+.PHONY: build run createdb dropdb psql migrateup migratedown sqlc
