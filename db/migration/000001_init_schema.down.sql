@@ -1,1 +1,3 @@
 DROP TABLE IF EXISTS shorturl;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users_action;

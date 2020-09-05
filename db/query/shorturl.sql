@@ -17,7 +17,7 @@ OFFSET $2;
 
 
 -- name: UpdateShortUrl :exec
-UPDATE shorturl SET origin = $2
+UPDATE shorturl SET hits = $2
 WHERE id = $1;
 
 
