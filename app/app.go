@@ -1,32 +1,27 @@
 package app
 
 import (
+	"api-ajf/app/route"
+
 	"github.com/gofiber/fiber"
 )
 
-func New() *fiber.App {
-	return fiber.New()
+func New() *AppX {
+	return &AppX{app: fiber.New()}
 }
 
-func Route(app *fiber.App) {
-	app.Get("/", index)
-	app.Get("/about", about)
+func (app *AppX) Route() {
+	app.app.Get("/login", route.Login)
+	app.app.Get("/logout", route.Logout)
+	app.app.Get("/register", route.Register)
+	app.app.Get("/about", route.About)
+	app.app.Get("/", route.Index)
 }
 
-func index(c *fiber.Ctx) {
-	c.Send("index")
+func (app *AppX) Listen() error {
+	return app.app.Listen("127.0.0.1:3000")
 }
 
-func about(c *fiber.Ctx) {
-	c.Send("about")
+type AppX struct {
+	app *fiber.App
 }
-
-// type App struct {
-// 	Fiber *fiber.App
-// }
-
-// func (a *App) index(c *fiber.Ctx) {
-
-// 	c.Send("index")
-
-// }

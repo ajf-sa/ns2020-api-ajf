@@ -5,10 +5,12 @@ import (
 	"log"
 )
 
+var appx *app.AppX
+
 func main() {
-	appx := app.New()
-	app.Route(appx)
-	err := appx.Listen("127.0.0.1:3000")
+	appx = app.New()
+	appx.Route()
+	err := appx.Listen()
 	if err != nil {
 		log.Fatal(err)
 	}
