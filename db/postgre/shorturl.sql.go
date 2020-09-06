@@ -35,7 +35,7 @@ func (q *Queries) DeleteShortUrl(ctx context.Context, id int32) error {
 }
 
 const getShortUrl = `-- name: GetShortUrl :one
-SELECT id, origin, short, created_at FROM shorturl
+SELECT id, origin, short, hits, created_at FROM shorturl
 WHERE id = $1 LIMIT 1
 `
 
@@ -46,13 +46,14 @@ func (q *Queries) GetShortUrl(ctx context.Context, id int32) (Shorturl, error) {
 		&i.ID,
 		&i.Origin,
 		&i.Short,
+		&i.Hits,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listShortUrl = `-- name: ListShortUrl :many
-SELECT id, origin, short, created_at FROM shorturl
+SELECT id, origin, short, hits, created_at FROM shorturl
 ORDER BY id
 LIMIT $1
 OFFSET $2
@@ -76,6 +77,7 @@ func (q *Queries) ListShortUrl(ctx context.Context, arg ListShortUrlParams) ([]S
 			&i.ID,
 			&i.Origin,
 			&i.Short,
+			&i.Hits,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -92,16 +94,16 @@ func (q *Queries) ListShortUrl(ctx context.Context, arg ListShortUrlParams) ([]S
 }
 
 const updateShortUrl = `-- name: UpdateShortUrl :exec
-UPDATE shorturl SET origin = $2
+UPDATE shorturl SET hits = $2
 WHERE id = $1
 `
 
 type UpdateShortUrlParams struct {
-	ID     int32          `json:"id"`
-	Origin sql.NullString `json:"origin"`
+	ID   int32         `json:"id"`
+	Hits sql.NullInt64 `json:"hits"`
 }
 
 func (q *Queries) UpdateShortUrl(ctx context.Context, arg UpdateShortUrlParams) error {
-	_, err := q.exec(ctx, q.updateShortUrlStmt, updateShortUrl, arg.ID, arg.Origin)
+	_, err := q.exec(ctx, q.updateShortUrlStmt, updateShortUrl, arg.ID, arg.Hits)
 	return err
 }

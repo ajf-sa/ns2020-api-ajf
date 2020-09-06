@@ -25,17 +25,47 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.createShortUrlStmt, err = db.PrepareContext(ctx, createShortUrl); err != nil {
 		return nil, fmt.Errorf("error preparing query CreateShortUrl: %w", err)
 	}
+	if q.createTokenStmt, err = db.PrepareContext(ctx, createToken); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateToken: %w", err)
+	}
+	if q.createUserStmt, err = db.PrepareContext(ctx, createUser); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateUser: %w", err)
+	}
 	if q.deleteShortUrlStmt, err = db.PrepareContext(ctx, deleteShortUrl); err != nil {
 		return nil, fmt.Errorf("error preparing query DeleteShortUrl: %w", err)
+	}
+	if q.deleteTokenStmt, err = db.PrepareContext(ctx, deleteToken); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteToken: %w", err)
+	}
+	if q.deleteUserStmt, err = db.PrepareContext(ctx, deleteUser); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteUser: %w", err)
 	}
 	if q.getShortUrlStmt, err = db.PrepareContext(ctx, getShortUrl); err != nil {
 		return nil, fmt.Errorf("error preparing query GetShortUrl: %w", err)
 	}
+	if q.getTokenStmt, err = db.PrepareContext(ctx, getToken); err != nil {
+		return nil, fmt.Errorf("error preparing query GetToken: %w", err)
+	}
+	if q.getUserStmt, err = db.PrepareContext(ctx, getUser); err != nil {
+		return nil, fmt.Errorf("error preparing query GetUser: %w", err)
+	}
 	if q.listShortUrlStmt, err = db.PrepareContext(ctx, listShortUrl); err != nil {
 		return nil, fmt.Errorf("error preparing query ListShortUrl: %w", err)
 	}
+	if q.listTokenStmt, err = db.PrepareContext(ctx, listToken); err != nil {
+		return nil, fmt.Errorf("error preparing query ListToken: %w", err)
+	}
+	if q.listUserStmt, err = db.PrepareContext(ctx, listUser); err != nil {
+		return nil, fmt.Errorf("error preparing query ListUser: %w", err)
+	}
 	if q.updateShortUrlStmt, err = db.PrepareContext(ctx, updateShortUrl); err != nil {
 		return nil, fmt.Errorf("error preparing query UpdateShortUrl: %w", err)
+	}
+	if q.updateTokenStmt, err = db.PrepareContext(ctx, updateToken); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateToken: %w", err)
+	}
+	if q.updateUserStmt, err = db.PrepareContext(ctx, updateUser); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateUser: %w", err)
 	}
 	return &q, nil
 }
@@ -47,9 +77,29 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing createShortUrlStmt: %w", cerr)
 		}
 	}
+	if q.createTokenStmt != nil {
+		if cerr := q.createTokenStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createTokenStmt: %w", cerr)
+		}
+	}
+	if q.createUserStmt != nil {
+		if cerr := q.createUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createUserStmt: %w", cerr)
+		}
+	}
 	if q.deleteShortUrlStmt != nil {
 		if cerr := q.deleteShortUrlStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing deleteShortUrlStmt: %w", cerr)
+		}
+	}
+	if q.deleteTokenStmt != nil {
+		if cerr := q.deleteTokenStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteTokenStmt: %w", cerr)
+		}
+	}
+	if q.deleteUserStmt != nil {
+		if cerr := q.deleteUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteUserStmt: %w", cerr)
 		}
 	}
 	if q.getShortUrlStmt != nil {
@@ -57,14 +107,44 @@ func (q *Queries) Close() error {
 			err = fmt.Errorf("error closing getShortUrlStmt: %w", cerr)
 		}
 	}
+	if q.getTokenStmt != nil {
+		if cerr := q.getTokenStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getTokenStmt: %w", cerr)
+		}
+	}
+	if q.getUserStmt != nil {
+		if cerr := q.getUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getUserStmt: %w", cerr)
+		}
+	}
 	if q.listShortUrlStmt != nil {
 		if cerr := q.listShortUrlStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing listShortUrlStmt: %w", cerr)
 		}
 	}
+	if q.listTokenStmt != nil {
+		if cerr := q.listTokenStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listTokenStmt: %w", cerr)
+		}
+	}
+	if q.listUserStmt != nil {
+		if cerr := q.listUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing listUserStmt: %w", cerr)
+		}
+	}
 	if q.updateShortUrlStmt != nil {
 		if cerr := q.updateShortUrlStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing updateShortUrlStmt: %w", cerr)
+		}
+	}
+	if q.updateTokenStmt != nil {
+		if cerr := q.updateTokenStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateTokenStmt: %w", cerr)
+		}
+	}
+	if q.updateUserStmt != nil {
+		if cerr := q.updateUserStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateUserStmt: %w", cerr)
 		}
 	}
 	return err
@@ -107,10 +187,20 @@ type Queries struct {
 	db                 DBTX
 	tx                 *sql.Tx
 	createShortUrlStmt *sql.Stmt
+	createTokenStmt    *sql.Stmt
+	createUserStmt     *sql.Stmt
 	deleteShortUrlStmt *sql.Stmt
+	deleteTokenStmt    *sql.Stmt
+	deleteUserStmt     *sql.Stmt
 	getShortUrlStmt    *sql.Stmt
+	getTokenStmt       *sql.Stmt
+	getUserStmt        *sql.Stmt
 	listShortUrlStmt   *sql.Stmt
+	listTokenStmt      *sql.Stmt
+	listUserStmt       *sql.Stmt
 	updateShortUrlStmt *sql.Stmt
+	updateTokenStmt    *sql.Stmt
+	updateUserStmt     *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
@@ -118,9 +208,19 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		db:                 tx,
 		tx:                 tx,
 		createShortUrlStmt: q.createShortUrlStmt,
+		createTokenStmt:    q.createTokenStmt,
+		createUserStmt:     q.createUserStmt,
 		deleteShortUrlStmt: q.deleteShortUrlStmt,
+		deleteTokenStmt:    q.deleteTokenStmt,
+		deleteUserStmt:     q.deleteUserStmt,
 		getShortUrlStmt:    q.getShortUrlStmt,
+		getTokenStmt:       q.getTokenStmt,
+		getUserStmt:        q.getUserStmt,
 		listShortUrlStmt:   q.listShortUrlStmt,
+		listTokenStmt:      q.listTokenStmt,
+		listUserStmt:       q.listUserStmt,
 		updateShortUrlStmt: q.updateShortUrlStmt,
+		updateTokenStmt:    q.updateTokenStmt,
+		updateUserStmt:     q.updateUserStmt,
 	}
 }

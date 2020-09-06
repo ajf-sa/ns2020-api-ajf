@@ -18,8 +18,23 @@ CREATE TABLE "users" (
 
 CREATE TABLE "users_action" (
   "id" SERIAL PRIMARY KEY,
+  "user_id" INT,
   "action_name" text,
   "action_result" text,
   "is_active" int DEFAULT (0),
-  "created_at" timestamptz DEFAULT (now())
+  "created_at" timestamptz DEFAULT (now()),
+   FOREIGN KEY(user_id) 
+	  REFERENCES users(id)
+);
+
+CREATE TABLE "tokens"(
+  "id" SERIAL PRIMARY KEY,
+  "user_id" INT,
+  "key" TEXT,
+  "is_active" int DEFAULT (0),
+  "created_at" timestamptz DEFAULT (now()),
+  FOREIGN KEY(user_id) 
+	  REFERENCES users(id)
+
+
 );

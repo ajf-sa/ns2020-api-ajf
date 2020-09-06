@@ -10,5 +10,33 @@ type Shorturl struct {
 	ID        int32          `json:"id"`
 	Origin    sql.NullString `json:"origin"`
 	Short     sql.NullString `json:"short"`
+	Hits      sql.NullInt64  `json:"hits"`
 	CreatedAt sql.NullTime   `json:"created_at"`
+}
+
+type Token struct {
+	ID        int32          `json:"id"`
+	UserID    sql.NullInt32  `json:"user_id"`
+	Key       sql.NullString `json:"key"`
+	IsActive  sql.NullInt32  `json:"is_active"`
+	CreatedAt sql.NullTime   `json:"created_at"`
+}
+
+type User struct {
+	ID        int32          `json:"id"`
+	Username  sql.NullString `json:"username"`
+	Password  sql.NullString `json:"password"`
+	Email     sql.NullString `json:"email"`
+	Phone     sql.NullString `json:"phone"`
+	IsActive  sql.NullInt32  `json:"is_active"`
+	CreatedAt sql.NullTime   `json:"created_at"`
+}
+
+type UsersAction struct {
+	ID           int32          `json:"id"`
+	UserID       sql.NullInt32  `json:"user_id"`
+	ActionName   sql.NullString `json:"action_name"`
+	ActionResult sql.NullString `json:"action_result"`
+	IsActive     sql.NullInt32  `json:"is_active"`
+	CreatedAt    sql.NullTime   `json:"created_at"`
 }

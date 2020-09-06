@@ -28,7 +28,7 @@ func Index(c *fiber.Ctx) {
 	_ = c.Render("index", fiber.Map{
 		"Title": "Hi",
 		"Login": isLogin(c),
-	})
+	}, "layout")
 
 }
 
