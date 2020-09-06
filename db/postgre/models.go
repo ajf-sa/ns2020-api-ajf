@@ -7,8 +7,8 @@ import (
 )
 
 type Todo struct {
-	ID        int32          `json:"id"`
-	Name      sql.NullString `json:"name"`
-	Done      sql.NullBool   `json:"done"`
-	CreatedAt sql.NullTime   `json:"created_at"`
+	ID        int64
+	Name      string
+	Completed sql.NullBool
+	CreatedAt sql.NullTime
 }

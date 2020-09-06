@@ -22,17 +22,49 @@ func New(db DBTX) *Queries {
 func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	q := Queries{db: db}
 	var err error
+	if q.createTodoStmt, err = db.PrepareContext(ctx, createTodo); err != nil {
+		return nil, fmt.Errorf("error preparing query CreateTodo: %w", err)
+	}
+	if q.deleteTodoByIdStmt, err = db.PrepareContext(ctx, deleteTodoById); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteTodoById: %w", err)
+	}
+	if q.getTodoByIdStmt, err = db.PrepareContext(ctx, getTodoById); err != nil {
+		return nil, fmt.Errorf("error preparing query GetTodoById: %w", err)
+	}
 	if q.listTodosStmt, err = db.PrepareContext(ctx, listTodos); err != nil {
 		return nil, fmt.Errorf("error preparing query ListTodos: %w", err)
+	}
+	if q.updateTodoStmt, err = db.PrepareContext(ctx, updateTodo); err != nil {
+		return nil, fmt.Errorf("error preparing query UpdateTodo: %w", err)
 	}
 	return &q, nil
 }
 
 func (q *Queries) Close() error {
 	var err error
+	if q.createTodoStmt != nil {
+		if cerr := q.createTodoStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing createTodoStmt: %w", cerr)
+		}
+	}
+	if q.deleteTodoByIdStmt != nil {
+		if cerr := q.deleteTodoByIdStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteTodoByIdStmt: %w", cerr)
+		}
+	}
+	if q.getTodoByIdStmt != nil {
+		if cerr := q.getTodoByIdStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getTodoByIdStmt: %w", cerr)
+		}
+	}
 	if q.listTodosStmt != nil {
 		if cerr := q.listTodosStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing listTodosStmt: %w", cerr)
+		}
+	}
+	if q.updateTodoStmt != nil {
+		if cerr := q.updateTodoStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing updateTodoStmt: %w", cerr)
 		}
 	}
 	return err
@@ -72,15 +104,23 @@ func (q *Queries) queryRow(ctx context.Context, stmt *sql.Stmt, query string, ar
 }
 
 type Queries struct {
-	db            DBTX
-	tx            *sql.Tx
-	listTodosStmt *sql.Stmt
+	db                 DBTX
+	tx                 *sql.Tx
+	createTodoStmt     *sql.Stmt
+	deleteTodoByIdStmt *sql.Stmt
+	getTodoByIdStmt    *sql.Stmt
+	listTodosStmt      *sql.Stmt
+	updateTodoStmt     *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
-		db:            tx,
-		tx:            tx,
-		listTodosStmt: q.listTodosStmt,
+		db:                 tx,
+		tx:                 tx,
+		createTodoStmt:     q.createTodoStmt,
+		deleteTodoByIdStmt: q.deleteTodoByIdStmt,
+		getTodoByIdStmt:    q.getTodoByIdStmt,
+		listTodosStmt:      q.listTodosStmt,
+		updateTodoStmt:     q.updateTodoStmt,
 	}
 }
