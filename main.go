@@ -51,6 +51,7 @@ func main() {
 	repo := db.NewRepo(dbd)
 
 	app := fiber.New()
+
 	app.Use(middleware.Logger())
 	app.Use(middleware.Recover())
 
@@ -61,7 +62,7 @@ func main() {
 	handlers := NewHandlers(repo)
 	SetApiV1(app, handlers)
 
-	err = app.Listen("127.0.0.1:3000")
+	err = app.Listen("3000")
 	if err != nil {
 		panic(err)
 	}

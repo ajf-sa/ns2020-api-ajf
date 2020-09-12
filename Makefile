@@ -7,11 +7,31 @@ dropdb:
 psql:
 	docker exec -it db01 psql simple_api -U admin
 
-migrateup:
+migration:
+	@read -p "Enter migration name: " name; \
+	migrate create -ext sql -dir db/migration -seq $$name
+
+migratever:
+	migrate -path db/migration -database "postgresql://admin:secret@localhost:5432/simple_api?sslmode=disable" -verbose version
+
+migrate:
 	migrate -path db/migration -database "postgresql://admin:secret@localhost:5432/simple_api?sslmode=disable" -verbose up
 
-migratedown:
+
+rollback:
 	migrate -path db/migration -database "postgresql://admin:secret@localhost:5432/simple_api?sslmode=disable" -verbose down
+
+migrateto:
+	@read -p "Enter migration version: " version; \
+	migrate -path db/migration -database "postgresql://admin:secret@localhost:5432/simple_api?sslmode=disable" -verbose up $$version
+
+rollbackto:
+	@read -p "Enter migration version: " version; \
+	migrate -path db/migration -database "postgresql://admin:secret@localhost:5432/simple_api?sslmode=disable" -verbose goto $$version
+
+migrateforce:
+	@read -p "Enter migration version: " version; \
+	migrate -path db/migration -database "postgresql://admin:secret@localhost:5432/simple_api?sslmode=disable" -verbose force $$version
 
 sqlc:
 	sqlc generate
@@ -21,5 +41,8 @@ run:
 
 build :
 	go build -o .
+
+echo :
+	echo $<
 	
-.PHONY: build run createdb dropdb psql migrateup migratedown sqlc
+.PHONY: build run createdb dropdb psql migrate rollback sqlc migration echo migratever migrateto rollbackto migrateforce
