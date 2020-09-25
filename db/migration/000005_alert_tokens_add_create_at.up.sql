@@ -1,0 +1,1 @@
+alter table tokens add  created_at timestamptz DEFAULT (now())
