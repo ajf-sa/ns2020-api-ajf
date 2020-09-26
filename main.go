@@ -37,7 +37,7 @@ func main() {
 		return ctx.Send([]byte("hello world"))
 	})
 
-	err := app.Listen("127.0.0.1:3000")
+	err := app.Listen(":3000")
 	if err != nil {
 		panic(err)
 	}
