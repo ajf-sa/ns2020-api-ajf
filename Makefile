@@ -2,7 +2,7 @@ createdb:
 	docker exec -it db01 createdb --username=admin --owner=admin simple_api
 
 dropdb:
-	docker exec -it db01 dropdb simple_api -U admin
+		docker exec -it db01 dropdb simple_api -U admin
 
 psql:
 	docker exec -it db01 psql simple_api -U admin
