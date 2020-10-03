@@ -40,6 +40,7 @@ func (h *Handlers) GetTodos(ctx *fiber.Ctx) error {
 }
 
 func (h *Handlers) GetTodo(ctx *fiber.Ctx) error {
+	// ctx.Set("Access-Control-Allow-Origin", "*")
 	paramsId := ctx.Params("id")
 	id, err := strconv.Atoi(paramsId)
 	if err != nil {

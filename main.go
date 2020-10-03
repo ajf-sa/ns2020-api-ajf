@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 
@@ -28,14 +29,15 @@ func main() {
 	app := fiber.New()
 
 	handlers := handlers.NewHandlers(repo)
-	SetApiV1(app, handlers)
 
 	app.Use(logger.New())
 	app.Use(recover.New())
+	app.Use(cors.New())
 
-	app.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.Send([]byte("hello world"))
-	})
+	SetApiV1(app, handlers)
+	// handlers.Get("/", func(ctx *fiber.Ctx) error {
+	// 	return ctx.Send([]byte("hello world"))
+	// })
 
 	err := app.Listen(":3000")
 	if err != nil {
